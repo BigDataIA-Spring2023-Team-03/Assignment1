@@ -10,6 +10,37 @@ from botocore.config import Config
 import string
 import webbrowser
 
+st.title('SEVIR Data Fetcher')
+
+data_source = st.selectbox('Data Source: ', ['GOES-16 geostationary satellite', 'NEXRAD weather radars'])
+
+if data_source == 'GOES-16 geostationary satellite':
+    BUCKET_NAME = 'noaa-goes16'
+    core_url = 'https://noaa-goes18.s3.amazonaws.com/{product_fn}/{year}/{day_of_year}/{hour}/{file_name}'
+    st.markdown(f"""
+URL Format: {core_url}\n
+Required Fields:
+- Product
+- Year
+- Day of Year
+- Hour
+- File Name
+""")
+elif data_source == 'NEXRAD weather radars':
+    BUCKET_NAME = 'noaa-nexrad-level2'
+    core_url = 'https://noaa-nexrad-level2.s3.amazonaws.com/{year}/{month}/{day}/{nexrad_station}/{file_name}'
+    st.markdown(f"""
+URL Format: {core_url}\n
+Required Fields:
+- Year
+- Month
+- Day
+- NEXRAD Station
+- File Name
+""")
+
+
+
 first_level = []
 year = []
 months = []
@@ -22,6 +53,8 @@ year.append("")
 months.append("")
 days.append("")
 files.append("")
+
+
 
 def find_url_from_filename(filename: str) -> str:
   file = filename.split("_")
@@ -36,19 +69,36 @@ def find_url_from_filename(filename: str) -> str:
 
   return prefix + prod + delim + year + delim + month + delim + date +delim + filename
 
-BUCKET_NAME = 'noaa-goes16'
-BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
-LOCAL_FILE_NAME = 'OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
+# BUCKET_NAME = 'noaa-goes16'
+# BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
+# LOCAL_FILE_NAME = 'OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
 
 s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
+# s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
+
+# Download Entire Folder
+def download_s3_folder(bucket_name, s3_folder, local_dir=None):
+    bucket = s3.Bucket(bucket_name)
+    # TODO: Only first 5 files for now
+    counter = 0
+    for obj in bucket.objects.filter(Prefix=s3_folder):
+        if counter == 5:
+            break
+        counter += 1
+        target = obj.key if local_dir is None \
+            else os.path.join(local_dir, os.path.relpath(obj.key, s3_folder))
+        if not os.path.exists(os.path.dirname(target)):
+            os.makedirs(os.path.dirname(target))
+        if obj.key[-1] == '/':
+            continue
+        bucket.download_file(obj.key, target)
 
 
 result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
 folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
 
 for folder in folders:
-    print("Folder:", folder)
+    # print("Folder:", folder)
     first_level.append(folder)
 
 prod_selected = st.selectbox(
@@ -101,13 +151,30 @@ if prod_selected:                                                               
                     file = item['Key']
                     files.append(file)
 
+                st.write(f'Total Files Available: {len(files)}')
+
                 for i in range(len(files)):
                     files[i] = files[i].replace(prefix, '')
+
+                # Download all files in folder
+                files.insert(1, 'Download All Files')
+
 
                 files_selected = st.selectbox(
                 'Please select file', files)
 
-                if files_selected:
+                if files_selected == 'Download All Files':
+                    s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+                    # Total Folder Size
+                    s3_folder = prefix
+                    bytes = sum([object.size for object in s3.Bucket(BUCKET_NAME).objects.filter(Prefix=s3_folder)])
+                    st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
+
+                    if st.button('Download All Files'):
+                        # TODO
+                        download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
+
+                elif files_selected:
                     link = find_url_from_filename(files_selected)
                     st.write(link)
 
