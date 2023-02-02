@@ -77,7 +77,7 @@ def find_url_from_filename(filename: str) -> str:
   month =  file[3][5:8]
   date =  file[3][8:10]
 
-  return prefix + prod + delim + year + delim + month + delim + date +delim + filename
+  return prefix + prod + delim + year + delim + month + delim + date + delim + filename
 
 # BUCKET_NAME = 'noaa-goes16'
 # BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
