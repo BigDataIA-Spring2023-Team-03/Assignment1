@@ -9,6 +9,16 @@ from botocore import UNSIGNED
 from botocore.config import Config
 import string
 import webbrowser
+from decouple import config
+
+########################################################################################################################
+# AWS Destination Credentials:
+aws_access_key_id = config('aws_access_key_id')
+aws_secret_access_key = config('aws_secret_access_key')
+# Destination S3 Directory:
+dest_bucket = 'damg7245'
+dest_folder = 'assignment1'
+########################################################################################################################
 
 st.title('SEVIR Data Fetcher')
 
@@ -92,6 +102,29 @@ def download_s3_folder(bucket_name, s3_folder, local_dir=None):
         if obj.key[-1] == '/':
             continue
         bucket.download_file(obj.key, target)
+
+
+# COPY S3 FILE TO DESTINATION:
+def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_selected):
+    # Get S3 File:
+    s3_src = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+    
+    src_response = s3_src.get_object(Bucket=src_bucket, Key=prefix+files_selected)
+
+
+    # Upload S3 to Destination:
+    s3_dest = boto3.client('s3',
+                      aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key)
+    
+    dest_file_name = f'{dest_folder}/{src_bucket}/{files_selected}'
+    test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
+    
+    dest_url = f'https://{dest_bucket}.s3.amazonaws.com/{dest_file_name}'
+    # print(f'Destination s3 URL: {dest_url}')
+    
+    return dest_url
+
 
 
 result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
@@ -178,12 +211,22 @@ if prod_selected:                                                               
                     link = find_url_from_filename(files_selected)
                     st.write(link)
 
+                    # TESTING
+                    st.write('TEST:')
+                    st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
                     st.text("")
                     st.text("")
                     st.text("")
 
-                    if st.button('Download File'):
-                        webbrowser.open_new_tab(link)
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.button('Download File'):
+                            webbrowser.open_new_tab(link)
+
+                    with col2:
+                        if st.button('Transfer File to S3 Bucket'):
+                            dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                            st.write(f'Destination s3 URL: {dest_url}')
 
 
         
