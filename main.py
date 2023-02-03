@@ -10,6 +10,8 @@ from botocore.config import Config
 import string
 import webbrowser
 from decouple import config
+# Import class from dbUtil
+import dbUtil
 
 ########################################################################################################################
 # AWS Destination Credentials:
@@ -22,11 +24,18 @@ dest_folder = 'assignment1'
 
 st.title('SEVIR Data Fetcher')
 
+# CREATE TABLE:
+# util = DbUtil('metadata1.db')
+# column_names = ['id INTEGER PRIMARY KEY', 'product TEXT', 'year TEXT', 'day_of_year TEXT', 'hour TEXT']
+# util.create_table('geos18', *column_names)
+
+# SELECT DATASOURCE:
 data_source = st.selectbox('Data Source: ', ['GOES-16 geostationary satellite', 'NEXRAD weather radars'])
 
 if data_source == 'GOES-16 geostationary satellite':
     BUCKET_NAME = 'noaa-goes16'
     core_url = 'https://noaa-goes18.s3.amazonaws.com/{product_fn}/{year}/{day_of_year}/{hour}/{file_name}'
+    metadata = ['Product', 'Year', 'Day of Year', 'Hour', 'File Name']
     st.markdown(f"""
 URL Format: {core_url}\n
 Required Fields:
@@ -39,6 +48,7 @@ Required Fields:
 elif data_source == 'NEXRAD weather radars':
     BUCKET_NAME = 'noaa-nexrad-level2'
     core_url = 'https://noaa-nexrad-level2.s3.amazonaws.com/{year}/{month}/{day}/{nexrad_station}/{file_name}'
+    metadata = ['Year', 'Month', 'Day', 'NEXRAD Station', 'File Name']
     st.markdown(f"""
 URL Format: {core_url}\n
 Required Fields:
@@ -65,19 +75,41 @@ days.append("")
 files.append("")
 
 
+# def find_url_from_filename(filename: str) -> str:
+#   file = filename.split("_")
 
-def find_url_from_filename(filename: str) -> str:
-  file = filename.split("_")
+#   prefix = "https://noaa-goes16.s3.amazonaws.com/"
+#   delim = "/"
+#   prod = file[1][:file[1].rindex("-")-1]
+#   prod = prod.rstrip(string.digits)
+#   year =  file[3][1:5]
+#   month =  file[3][5:8]
+#   date =  file[3][8:10]
 
-  prefix = "https://noaa-goes16.s3.amazonaws.com/"
-  delim = "/"
-  prod = file[1][:file[1].rindex("-")-1]
-  prod = prod.rstrip(string.digits)
-  year =  file[3][1:5]
-  month =  file[3][5:8]
-  date =  file[3][8:10]
+#   return prefix + prod + delim + year + delim + month + delim + date + delim + filename
 
-  return prefix + prod + delim + year + delim + month + delim + date + delim + filename
+
+def filename_url_producer(bucket_name, file_name):
+    pieces = file_name.split("_")
+    if 'nexrad' in bucket_name: 
+        print(pieces)
+        nexrad_station = pieces[0][0:4]
+        year = pieces[0][4:8]
+        month = pieces[0][8:10]
+        day = pieces[0][10:12]
+        time = pieces[1]
+        core_url = f'https://noaa-nexrad-level2.s3.amazonaws.com/{year}/{month}/{day}/{nexrad_station}/{file_name}'
+    if 'noaa-goes' in bucket_name:
+        print(pieces)
+        product = pieces[1]
+        product_fn = product[:product.rindex('-')]
+        year = pieces[3][1:5]
+        day_of_year = pieces[3][5:8]
+        hour = pieces[3][8:10]
+        core_url = f'https://noaa-goes18.s3.amazonaws.com/{product_fn}/{year}/{day_of_year}/{hour}/{file_name}'
+    
+    print(core_url)
+    return core_url 
 
 # BUCKET_NAME = 'noaa-goes16'
 # BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
@@ -135,7 +167,7 @@ for folder in folders:
     first_level.append(folder)
 
 prod_selected = st.selectbox(
-    'Please select Product', first_level)
+    f'Please select {metadata[0]}', first_level)
 
 if prod_selected:                                                                                   #prod selected
      
@@ -147,7 +179,7 @@ if prod_selected:                                                               
         year[i] = year[i].replace(prod_selected, '')
     
     year_selected = st.selectbox(
-    'Please select year', year)
+    f'Please select {metadata[1]}', year)
 
 
     if year_selected:      
@@ -161,7 +193,7 @@ if prod_selected:                                                               
             months[i] = months[i].replace(prefix, '')
         
         months_selected = st.selectbox(
-        'Please select month', months)
+        f'Please select {metadata[2]}', months)
 
         if months_selected:      
                                                                                      #months selected
@@ -174,7 +206,7 @@ if prod_selected:                                                               
                 days[i] = days[i].replace(prefix, '')
             
             days_selected = st.selectbox(
-            'Please select Day', days)
+            f'Please select {metadata[3]}', days)
 
             if days_selected:      
                                                                                      #months selected
@@ -194,7 +226,7 @@ if prod_selected:                                                               
 
 
                 files_selected = st.selectbox(
-                'Please select file', files)
+                f'Please select {metadata[4]}', files)
 
                 if files_selected == 'Download All Files':
                     s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
@@ -208,8 +240,8 @@ if prod_selected:                                                               
                         download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
 
                 elif files_selected:
-                    link = find_url_from_filename(files_selected)
-                    st.write(link)
+                    url = filename_url_producer(BUCKET_NAME, files_selected)
+                    st.write(url)
 
                     # TESTING
                     st.write('TEST:')
@@ -221,7 +253,7 @@ if prod_selected:                                                               
                     col1, col2 = st.columns(2)
                     with col1:
                         if st.button('Download File'):
-                            webbrowser.open_new_tab(link)
+                            webbrowser.open_new_tab(url)
 
                     with col2:
                         if st.button('Transfer File to S3 Bucket'):

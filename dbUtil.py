@@ -11,9 +11,9 @@ class DbUtil:
         self.cursor = self.conn.cursor()
 
     def create_table(self, table_name, *columns):
-        query = '''CREATE TABLE IF NOT EXISTS {} (
-                                    {}
-                                );'''.format(table_name, ', '.join(columns))
+        query = f'''CREATE TABLE IF NOT EXISTS {table_name} (
+                                    {', '.join(columns)}
+                                );'''
         self.cursor.execute(query)
         self.conn.commit()
 
@@ -25,9 +25,9 @@ class DbUtil:
 
 
     def filter(self, table_name, req_value, **input_values):
-        query = '''SELECT DISTINCT {} from {}  WHERE'''.format(req_value, table_name)
+        query = f'''SELECT DISTINCT {req_value} from {table_name}  WHERE'''
         for i in input_values.keys():
-            query += ' {} = ? AND'.format(i)
+            query += f' {i} = ? AND'
         if query.endswith('AND'):
             query = query[:-4]
         self.cursor.execute(query, tuple(input_values.values()))
@@ -35,13 +35,15 @@ class DbUtil:
 
 if __name__ == '__main__':
     s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+    bucket_name = 'noaa-goes18'
+    table_name = bucket_name.replace('-', '_')
     paginator = s3.get_paginator('list_objects')
-    pages = paginator.paginate(Bucket='noaa-goes18', Prefix='ABI-L1b-RadC')
+    pages = paginator.paginate(Bucket=bucket_name, Prefix='ABI-L1b-RadC')
     util = DbUtil('metadata1.db')
     try:
         # creation of table
         column_names = ['id INTEGER PRIMARY KEY', 'product TEXT', 'year TEXT', 'day_of_year TEXT', 'hour TEXT']
-        util.create_table('geos18', *column_names)
+        util.create_table(table_name, *column_names)
 
         # insertion of rows
         rows = set()
@@ -57,17 +59,17 @@ if __name__ == '__main__':
                     rows.add((product, year, day_of_year, hour))
                 if ((i+1) % 1000 == 0):
                     print('hi')
-                    util.insert('geos18', ['product', 'year', 'day_of_year', 'hour'],rows)
+                    util.insert(table_name, ['product', 'year', 'day_of_year', 'hour'],rows)
                     rows = set()
         if rows:
-            util.insert('geos18', ['product', 'year', 'day_of_year', 'hour'],rows)
+            util.insert(table_name, ['product', 'year', 'day_of_year', 'hour'],rows)
 
         cursor = util.conn.cursor()
-        cursor.execute("SELECT count(*) FROM geos18")
+        cursor.execute(f"SELECT count(*) FROM {table_name}")
         result = cursor.fetchall()
         print(result)
         # print(util.filter('geos18', 'day_of_year', product = 'ABI-L1b-RadC', year = '2022'))
         # print(util.filter('geos18', 'year', product = 'ABI-L1b-RadC'))
-        print(util.filter('geos18', 'hour', product = 'ABI-L1b-RadC', year = '2022', day_of_year = '209'))
+        print(util.filter(table_name, 'hour', product = 'ABI-L1b-RadC', year = '2022', day_of_year = '209'))
     finally:
         util.conn.close()
