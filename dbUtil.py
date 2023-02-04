@@ -9,24 +9,21 @@ class DbUtil:
         self.cursor = self.conn.cursor()
 
     def create_table(self, table_name, *columns):
-        query = '''CREATE TABLE IF NOT EXISTS {} (
-                                    {}
-                                );'''.format(table_name, ', '.join(columns))
+        query = f'''CREATE TABLE IF NOT EXISTS {table_name} (
+                                    {', '.join(columns)}
+                                );'''
         self.cursor.execute(query)
         self.conn.commit()
 
     def insert(self, table_name, column_names, list_of_tuples):
-        util.conn.executemany('INSERT INTO {} ({}) VALUES ({})'
-                              .format(table_name,
-                                      ', '.join([i for i in column_names]),
-                                      ', '.join(['?' for _ in range(len(column_names))])),
-                              list_of_tuples)
+        print('INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join([i for i in column_names]), ', '.join(['?' for i in range(len(column_names))])))
+        util.conn.executemany('INSERT INTO {} ({}) VALUES ({})'.format(table_name, ', '.join([i for i in column_names]), ', '.join(['?' for i in range(len(column_names))])), list_of_tuples)
         util.conn.commit()
 
     def filter(self, table_name, req_value, **input_values):
-        query = '''SELECT DISTINCT {} from {}  WHERE'''.format(req_value, table_name)
+        query = f'''SELECT DISTINCT {req_value} from {table_name}  WHERE'''
         for i in input_values.keys():
-            query += ' {} = ? AND'.format(i)
+            query += f' {i} = ? AND'
         if query.endswith('AND'):
             query = query[:-4]
         self.cursor.execute(query, tuple(input_values.values()))
