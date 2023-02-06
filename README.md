@@ -6,10 +6,10 @@
 
 | NAME                      |     NUID        |
 |---------------------------|-----------------|
-|   Raj Mehta               |   001443824     |
-|   Mani Deepak Reddy Aila  |   001050173     |
-|   Jared Videlefsky        |   001302741     |
-|   Rumi Jha                |   001302741     |
+|   Raj Mehta               |   002743076     |
+|   Mani Deepak Reddy Aila  |   002728148     |
+|   Jared Videlefsky        |   001966442     |
+|   Rumi Jha                |   002172213     |
  
  Submission Date: 10th February'23
 
