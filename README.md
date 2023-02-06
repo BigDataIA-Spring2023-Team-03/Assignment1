@@ -29,16 +29,16 @@ Amazon Glue for ETL and Amazon Quicksight for Visualization and Dashboard creati
 ## Requirements
 
 ● GEOS
-a. Explore and download selected datasets for the GOES satellite dataset
-b. Given a filename, construct the hyperlink of data location.
-c. Write Unit tests for all the use cases
-d. Test using the links from ![3](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
+1. Explore and download selected datasets for the GOES satellite dataset
+2. Given a filename, construct the hyperlink of data location.
+3. Write Unit tests for all the use cases
+4. Test using the links from ![Google Docs file](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
 ● NexRad
 a. Explore and download selected datasets for the NexRad dataset
 b. Given a filename, construct the hyperlink of data location.
 c. Write Unit tests for all the use cases
-d. Test using the links from ![3](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
-● Use a python package of your choice and plot the NexRad locations from ![4](https://en.wikipedia.org/wiki/NEXRAD)
+d. Test using the links from ![Google Docs File](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
+● Use a python package of your choice and plot the NexRad locations from ![Nexrad Wikipedia Page](https://en.wikipedia.org/wiki/NEXRAD)
 
 ## Test Results
 
@@ -73,6 +73,7 @@ Add steps here
 ### AWS Dashboard
 
 #### change image according to our console
+
 ![Details-Fatality-2018](https://user-images.githubusercontent.com/59594174/110068829-88b8e980-7d44-11eb-8763-35b26129fb3d.png)
 
 ![Sevir_Details_2018](https://user-images.githubusercontent.com/59594174/110068840-8fdff780-7d44-11eb-9f4e-1ec0e1f3d5be.png)
@@ -80,7 +81,9 @@ Add steps here
 ### SQLite Tables
 
 #### change image according to our console
-![DeathAnalysisByState](https://user-images.githubusercontent.com/59594174/110068964-c9b0fe00-7d44-11eb-9c03-1f8660eca010.PNG)
+
+### Expected Results
+![NEXRAD Locations by cities](https://user-images.githubusercontent.com/59594174/110068964-c9b0fe00-7d44-11eb-9c03-1f8660eca010.PNG)
 
 
 
