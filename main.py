@@ -7,6 +7,7 @@ import os
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
+from botocore.errorfactory import ClientError # checking if file exists already
 import string
 import webbrowser
 from decouple import config
@@ -150,8 +151,20 @@ def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_sel
                       aws_secret_access_key=aws_secret_access_key)
     
     dest_file_name = f'{dest_folder}/{src_bucket}/{files_selected}'
-    test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
-    
+
+    # Check if file has already beeen transferred
+    try:
+        s3_dest.head_object(Bucket='damg7245', Key=dest_file_name)
+        # st.write("""File Transfer Error: File already exists!""")
+        error = '<p style="font-family:sans-serif; color:Red; font-size: 20px;">File Transfer Error: File already exists!</p>'
+        st.markdown(error, unsafe_allow_html=True)
+        # dest_url = """File Transfer Error: File already exists!"""
+    except ClientError:
+        # Not found
+        print("""File doesn't exist""")
+
+        test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
+        
     dest_url = f'https://{dest_bucket}.s3.amazonaws.com/{dest_file_name}'
     # print(f'Destination s3 URL: {dest_url}')
     
@@ -258,6 +271,8 @@ if prod_selected:                                                               
                     with col2:
                         if st.button('Transfer File to S3 Bucket'):
                             dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                            if 'Error' in dest_url:
+                                st.write(dest_url)
                             st.write(f'Destination s3 URL: {dest_url}')
 
 
