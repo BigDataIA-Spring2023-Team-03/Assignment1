@@ -29,16 +29,16 @@ Amazon Glue for ETL and Amazon Quicksight for Visualization and Dashboard creati
 ## Requirements
 
 1. GEOS
- 1. Explore and download selected datasets for the GOES satellite dataset
- 2. Given a filename, construct the hyperlink of data location.
- 3. Write Unit tests for all the use cases
- 4. Test using the links from ![Google-Docs-file](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
+    1. Explore and download selected datasets for the GOES satellite dataset
+    2. Given a filename, construct the hyperlink of data location.
+    3. Write Unit tests for all the use cases
+    4. Test using the links from [Google-Docs-file](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
 2. NexRad
- 1. Explore and download selected datasets for the NexRad dataset
- 2. Given a filename, construct the hyperlink of data location.
- 3. Write Unit tests for all the use cases
- 4. Test using the links from ![Google-Docs-File](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
-● Use a python package of your choice and plot the NexRad locations from ![Nexrad-Wikipedia-Page](https://en.wikipedia.org/wiki/NEXRAD)
+    1. Explore and download selected datasets for the NexRad dataset
+    2. Given a filename, construct the hyperlink of data location.
+    3. Write Unit tests for all the use cases
+    4. Test using the links from [Google-Docs-File](https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/edit#gid=0)
+    5. Use a python package of your choice and plot the NexRad locations from [Nexrad-Wikipedia-Page](https://en.wikipedia.org/wiki/NEXRAD)
 
 ## Test Results
 
