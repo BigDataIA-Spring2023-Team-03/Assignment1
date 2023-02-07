@@ -82,6 +82,12 @@ Add steps here
 
 ### SQLite Tables
 
+### Logging
+Logging was created with AWS CloudWatch. Logs contain a timestamp and a message. The messages we record are below:
+- User Input
+- Generated URL based off of the User Input
+- User Action: Download Locally or Transfer to S3 Bucket
+
 #### change image according to our console
 
 ### Expected Results
