@@ -13,11 +13,16 @@ import webbrowser
 from decouple import config
 # Import class from dbUtil
 import dbUtil
+# Import AWS Logging
+from aws_logging import write_logs
 
 ########################################################################################################################
 # AWS Destination Credentials:
 aws_access_key_id = config('aws_access_key_id')
 aws_secret_access_key = config('aws_secret_access_key')
+# AWS CloudWatch Credentials:
+# log_aws_access_key_id = config('log_aws_access_key_id')
+# log_aws_secret_access_key = config('log_aws_secret_access_key')
 # Destination S3 Directory:
 dest_bucket = 'damg7245'
 dest_folder = 'assignment1'
@@ -255,6 +260,9 @@ if prod_selected:                                                               
                 elif files_selected:
                     url = filename_url_producer(BUCKET_NAME, files_selected)
                     st.write(url)
+                    user_inputs = [prod_selected, year_selected, months_selected, days_selected, files_selected]
+                    write_logs(f'User Input: {user_inputs}')
+                    write_logs(f'Generated URL: {url}')
 
                     # TESTING
                     st.write('TEST:')
@@ -266,11 +274,14 @@ if prod_selected:                                                               
                     col1, col2 = st.columns(2)
                     with col1:
                         if st.button('Download File'):
+                            write_logs('User Action: Downloaded File Locally')
                             webbrowser.open_new_tab(url)
+                            st.write('File Downloaded Locally')
 
                     with col2:
                         if st.button('Transfer File to S3 Bucket'):
                             dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                            write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
                             if 'Error' in dest_url:
                                 st.write(dest_url)
                             st.write(f'Destination s3 URL: {dest_url}')
