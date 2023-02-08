@@ -1,20 +1,12 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import json
-import streamlit.components.v1 as components
 import os
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 from botocore.errorfactory import ClientError # checking if file exists already
-import string
 import webbrowser
 from decouple import config
-# Import class from dbUtil
-import dbUtil
-# Import AWS Logging
-from aws_logging import write_logs
+from dbUtil import DbUtil
 
 ########################################################################################################################
 # AWS Destination Credentials:
@@ -30,70 +22,51 @@ dest_folder = 'assignment1'
 
 st.title('SEVIR Data Fetcher')
 
-# CREATE TABLE:
-# util = DbUtil('metadata1.db')
-# column_names = ['id INTEGER PRIMARY KEY', 'product TEXT', 'year TEXT', 'day_of_year TEXT', 'hour TEXT']
-# util.create_table('geos18', *column_names)
-
 # SELECT DATASOURCE:
 data_source = st.selectbox('Data Source: ', ['GOES-16 geostationary satellite', 'NEXRAD weather radars'])
 
 if data_source == 'GOES-16 geostationary satellite':
     BUCKET_NAME = 'noaa-goes16'
+    TABLE_NAME = 'geos18'
     core_url = 'https://noaa-goes18.s3.amazonaws.com/{product_fn}/{year}/{day_of_year}/{hour}/{file_name}'
     metadata = ['Product', 'Year', 'Day of Year', 'Hour', 'File Name']
     st.markdown(f"""
-URL Format: {core_url}\n
-Required Fields:
-- Product
-- Year
-- Day of Year
-- Hour
-- File Name
-""")
+                URL Format: {core_url}\n
+                Required Fields:
+                - Product
+                - Year
+                - Day of Year
+                - Hour
+                - File Name
+                """)
 elif data_source == 'NEXRAD weather radars':
     BUCKET_NAME = 'noaa-nexrad-level2'
+    TABLE_NAME = 'nexrad'
     core_url = 'https://noaa-nexrad-level2.s3.amazonaws.com/{year}/{month}/{day}/{nexrad_station}/{file_name}'
     metadata = ['Year', 'Month', 'Day', 'NEXRAD Station', 'File Name']
     st.markdown(f"""
-URL Format: {core_url}\n
-Required Fields:
-- Year
-- Month
-- Day
-- NEXRAD Station
-- File Name
-""")
+                URL Format: {core_url}\n
+                Required Fields:
+                - Year
+                - Month
+                - Day
+                - NEXRAD Station
+                - File Name
+                """)
 
 
-
-first_level = []
+level1 = []
 year = []
 months = []
 days = []
 files = []
 files_selected = ""
 
-first_level.append("")
+level1.append("")
 year.append("")
 months.append("")
 days.append("")
 files.append("")
-
-
-# def find_url_from_filename(filename: str) -> str:
-#   file = filename.split("_")
-
-#   prefix = "https://noaa-goes16.s3.amazonaws.com/"
-#   delim = "/"
-#   prod = file[1][:file[1].rindex("-")-1]
-#   prod = prod.rstrip(string.digits)
-#   year =  file[3][1:5]
-#   month =  file[3][5:8]
-#   date =  file[3][8:10]
-
-#   return prefix + prod + delim + year + delim + month + delim + date + delim + filename
-
 
 def filename_url_producer(bucket_name, file_name):
     pieces = file_name.split("_")
@@ -117,12 +90,8 @@ def filename_url_producer(bucket_name, file_name):
     print(core_url)
     return core_url 
 
-# BUCKET_NAME = 'noaa-goes16'
-# BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
-# LOCAL_FILE_NAME = 'OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
 
 s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-# s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
 
 # Download Entire Folder
 def download_s3_folder(bucket_name, s3_folder, local_dir=None):
@@ -176,16 +145,17 @@ def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_sel
     return dest_url
 
 
+util = DbUtil('metadata.db')
 
 result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
-folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
+# folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
+folders = util.filter(TABLE_NAME, 'product', **{})
 
 for folder in folders:
-    # print("Folder:", folder)
-    first_level.append(folder)
+    level1.append(folder)
 
 prod_selected = st.selectbox(
-    f'Please select {metadata[0]}', first_level)
+    f'Please select {metadata[0]}', level1)
 
 if prod_selected:                                                                                   #prod selected
      
@@ -195,13 +165,14 @@ if prod_selected:                                                               
 
     for i in range(len(year)):
         year[i] = year[i].replace(prod_selected, '')
-    
+
+    # year = util.filter(TABLE_NAME, )
+
     year_selected = st.selectbox(
     f'Please select {metadata[1]}', year)
 
 
-    if year_selected:      
-                                                                                     #year selected
+    if year_selected:
         prefix = prod_selected+year_selected
         result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
         for o in result.get('CommonPrefixes'):
@@ -261,8 +232,8 @@ if prod_selected:                                                               
                     url = filename_url_producer(BUCKET_NAME, files_selected)
                     st.write(url)
                     user_inputs = [prod_selected, year_selected, months_selected, days_selected, files_selected]
-                    write_logs(f'User Input: {user_inputs}')
-                    write_logs(f'Generated URL: {url}')
+                    # write_logs(f'User Input: {user_inputs}')
+                    # write_logs(f'Generated URL: {url}')
 
                     # TESTING
                     st.write('TEST:')
@@ -274,103 +245,15 @@ if prod_selected:                                                               
                     col1, col2 = st.columns(2)
                     with col1:
                         if st.button('Download File'):
-                            write_logs('User Action: Downloaded File Locally')
+                            # write_logs('User Action: Downloaded File Locally')
                             webbrowser.open_new_tab(url)
                             st.write('File Downloaded Locally')
 
                     with col2:
                         if st.button('Transfer File to S3 Bucket'):
                             dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
-                            write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
+                            # write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
                             if 'Error' in dest_url:
                                 st.write(dest_url)
                             st.write(f'Destination s3 URL: {dest_url}')
 
-
-        
-
-
-# {
-#       "expectation_type": "expect_table_row_count_to_be_between",
-#       "kwargs": {
-#         "max_value": 100000,
-#         "min_value": 0
-#       },
-#       "meta": {
-#         "profiler_details": {
-#           "metric_configuration": {
-#             "domain_kwargs": {},
-#             "metric_name": "table.row_count",
-#             "metric_value_kwargs": null
-#           },
-#           "num_batches": 1
-#         }
-#       }
-#     },
-#     {
-#       "expectation_type": "expect_compound_columns_to_be_unique",
-#       "kwargs": {
-#         "column_list": [
-#           "product",
-#           "year",
-#           "day_of_year",
-#           "hour"
-#         ]
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_column_values_to_not_be_null",
-#       "kwargs": {
-#         "column": "product"
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_column_values_to_not_be_null",
-#       "kwargs": {
-#         "column": "year"
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_column_values_to_not_be_null",
-#       "kwargs": {
-#         "column": "day_of_year"
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_column_values_to_not_be_null",
-#       "kwargs": {
-#         "column": "hour"
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_column_values_to_be_in_set",
-#       "kwargs": {
-#         "column": "product",
-#         "value_set": [
-#           "ABI-L1b-RadC"
-#         ]
-#       },
-#       "meta": {}
-#     },
-#     {
-#       "expectation_type": "expect_table_columns_to_match_set",
-#       "kwargs": {
-#         "column_set": [
-#           "day_of_year",
-#           "product",
-#           "year",
-#           "hour",
-#           "id"
-#         ]
-#       },
-#       "meta": {
-#         "profiler_details": {
-#           "success_ratio": 1.0
-#         }
-#       }
-#     }
