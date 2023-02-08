@@ -7,16 +7,22 @@ import os
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
+from botocore.errorfactory import ClientError # checking if file exists already
 import string
 import webbrowser
 from decouple import config
 # Import class from dbUtil
 import dbUtil
+# Import AWS Logging
+from aws_logging import write_logs
 
 ########################################################################################################################
 # AWS Destination Credentials:
 aws_access_key_id = config('aws_access_key_id')
 aws_secret_access_key = config('aws_secret_access_key')
+# AWS CloudWatch Credentials:
+# log_aws_access_key_id = config('log_aws_access_key_id')
+# log_aws_secret_access_key = config('log_aws_secret_access_key')
 # Destination S3 Directory:
 dest_bucket = 'damg7245'
 dest_folder = 'assignment1'
@@ -150,8 +156,20 @@ def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_sel
                       aws_secret_access_key=aws_secret_access_key)
     
     dest_file_name = f'{dest_folder}/{src_bucket}/{files_selected}'
-    test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
-    
+
+    # Check if file has already beeen transferred
+    try:
+        s3_dest.head_object(Bucket='damg7245', Key=dest_file_name)
+        # st.write("""File Transfer Error: File already exists!""")
+        error = '<p style="font-family:sans-serif; color:Red; font-size: 20px;">File Transfer Error: File already exists!</p>'
+        st.markdown(error, unsafe_allow_html=True)
+        # dest_url = """File Transfer Error: File already exists!"""
+    except ClientError:
+        # Not found
+        print("""File doesn't exist""")
+
+        test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
+        
     dest_url = f'https://{dest_bucket}.s3.amazonaws.com/{dest_file_name}'
     # print(f'Destination s3 URL: {dest_url}')
     
@@ -242,6 +260,9 @@ if prod_selected:                                                               
                 elif files_selected:
                     url = filename_url_producer(BUCKET_NAME, files_selected)
                     st.write(url)
+                    user_inputs = [prod_selected, year_selected, months_selected, days_selected, files_selected]
+                    write_logs(f'User Input: {user_inputs}')
+                    write_logs(f'Generated URL: {url}')
 
                     # TESTING
                     st.write('TEST:')
@@ -253,11 +274,16 @@ if prod_selected:                                                               
                     col1, col2 = st.columns(2)
                     with col1:
                         if st.button('Download File'):
+                            write_logs('User Action: Downloaded File Locally')
                             webbrowser.open_new_tab(url)
+                            st.write('File Downloaded Locally')
 
                     with col2:
                         if st.button('Transfer File to S3 Bucket'):
                             dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                            write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
+                            if 'Error' in dest_url:
+                                st.write(dest_url)
                             st.write(f'Destination s3 URL: {dest_url}')
 
 

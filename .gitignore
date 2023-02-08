@@ -9,3 +9,6 @@ great_expectations/plugins
 great_expectations/expectations/.ge_store_backend_id
 great_expectations/uncommitted/config_variables.yml
 great_expectations/uncommitted/validations
+
+jv_test.py
+__pycache__/
