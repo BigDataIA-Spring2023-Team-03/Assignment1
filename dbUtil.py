@@ -58,6 +58,7 @@ if __name__ == '__main__':
         for page in pages:
             for obj in page['Contents']:
                 levels = obj['Key'].split('/')
+                # print('hi')
                 if len(levels) == 5:
                     product = levels[0]
                     year = levels[1]
@@ -73,7 +74,7 @@ if __name__ == '__main__':
         cursor = util.conn.cursor()
 
         # filtering of rows
-        print(util.filter(table_name_geos, '', product='ABI-L1b-RadC', year='2022', day_of_year='209'))
+        # print(util.filter(table_name_geos, '', product='ABI-L1b-RadC', year='2022', day_of_year='209'))
         print(util.filter(table_name_geos, 'day_of_year', product='ABI-L1b-RadC', year='2022'))
         print(util.filter(table_name_geos, 'year', product='ABI-L1b-RadC'))
 

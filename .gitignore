@@ -1,1 +1,11 @@
 .env
+
+venv_assignment1
+
+great_expectations/checkpoints
+great_expectations/data
+great_expectations/plugins
+
+great_expectations/expectations/.ge_store_backend_id
+great_expectations/uncommitted/config_variables.yml
+great_expectations/uncommitted/validations

@@ -264,3 +264,87 @@ if prod_selected:                                                               
         
 
 
+# {
+#       "expectation_type": "expect_table_row_count_to_be_between",
+#       "kwargs": {
+#         "max_value": 100000,
+#         "min_value": 0
+#       },
+#       "meta": {
+#         "profiler_details": {
+#           "metric_configuration": {
+#             "domain_kwargs": {},
+#             "metric_name": "table.row_count",
+#             "metric_value_kwargs": null
+#           },
+#           "num_batches": 1
+#         }
+#       }
+#     },
+#     {
+#       "expectation_type": "expect_compound_columns_to_be_unique",
+#       "kwargs": {
+#         "column_list": [
+#           "product",
+#           "year",
+#           "day_of_year",
+#           "hour"
+#         ]
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_column_values_to_not_be_null",
+#       "kwargs": {
+#         "column": "product"
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_column_values_to_not_be_null",
+#       "kwargs": {
+#         "column": "year"
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_column_values_to_not_be_null",
+#       "kwargs": {
+#         "column": "day_of_year"
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_column_values_to_not_be_null",
+#       "kwargs": {
+#         "column": "hour"
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_column_values_to_be_in_set",
+#       "kwargs": {
+#         "column": "product",
+#         "value_set": [
+#           "ABI-L1b-RadC"
+#         ]
+#       },
+#       "meta": {}
+#     },
+#     {
+#       "expectation_type": "expect_table_columns_to_match_set",
+#       "kwargs": {
+#         "column_set": [
+#           "day_of_year",
+#           "product",
+#           "year",
+#           "hour",
+#           "id"
+#         ]
+#       },
+#       "meta": {
+#         "profiler_details": {
+#           "success_ratio": 1.0
+#         }
+#       }
+#     }
