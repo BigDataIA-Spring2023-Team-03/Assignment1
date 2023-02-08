@@ -27,8 +27,7 @@
           "station",
           "year",
           "month"
-        ],
-        "exact_match": null
+        ]
       },
       "meta": {
         "profiler_details": {
@@ -80,7 +79,10 @@
       "expectation_type": "expect_column_values_to_be_in_set",
       "kwargs": {
         "column": "year",
-        "value_set": [2022, 2023]
+        "value_set": [
+          2022,
+          2023
+        ]
       },
       "meta": {}
     },
