@@ -184,28 +184,7 @@ td .show-scrollbars {
   }
 }</style>
 
-    <style>/*index page*/
-.ge-index-page-site-name-title {}
-.ge-index-page-table-container {}
-.ge-index-page-table {}
-.ge-index-page-table-profiling-links-header {}
-.ge-index-page-table-expectations-links-header {}
-.ge-index-page-table-validations-links-header {}
-.ge-index-page-table-profiling-links-list {}
-.ge-index-page-table-profiling-links-item {}
-.ge-index-page-table-expectation-suite-link {}
-.ge-index-page-table-validation-links-list {}
-.ge-index-page-table-validation-links-item {}
-
-/*breadcrumbs*/
-.ge-breadcrumbs {}
-.ge-breadcrumbs-item {}
-
-/*navigation sidebar*/
-.ge-navigation-sidebar-container {}
-.ge-navigation-sidebar-content {}
-.ge-navigation-sidebar-title {}
-.ge-navigation-sidebar-link {}</style>
+    <style></style>
 
     
   
@@ -585,7 +564,7 @@ img.dev-loop {
         <a href="#">
           <img
             class="NO-CACHE"
-            src="https://great-expectations-web-assets.s3.us-east-2.amazonaws.com/logo-long.png?d=20230208T010918.572825Z&dataContextId=faf5e5f5-479d-4f6f-8d32-37a827a74916"
+            src="https://great-expectations-web-assets.s3.us-east-2.amazonaws.com/logo-long.png?d=20230208T030752.210573Z&dataContextId=faf5e5f5-479d-4f6f-8d32-37a827a74916"
             alt="Great Expectations"
             style="width: auto; height: 50px"
           />
@@ -697,24 +676,11 @@ img.dev-loop {
       <li class="nav-item">
         <a
             class="nav-link active"
-            id="Validation-Results-tab"
-            data-toggle="tab"
-            href="#Validation-Results"
-            role="tab"
-            aria-selected="true"
-            aria-controls="Validation-Results">
-          Validation Results
-        </a>
-      </li>
-    
-      <li class="nav-item">
-        <a
-            class="nav-link"
             id="Expectation-Suites-tab"
             data-toggle="tab"
             href="#Expectation-Suites"
             role="tab"
-            aria-selected="false"
+            aria-selected="true"
             aria-controls="Expectation-Suites">
           Expectation Suites
         </a>
@@ -726,9 +692,9 @@ img.dev-loop {
     
       <div
         class="tab-pane fade show active"
-        id="Validation-Results"
+        id="Expectation-Suites"
         role="tabpanel"
-        aria-labelledby="Validation-Results-tab">
+        aria-labelledby="Expectation-Suites-tab">
         
 
 
@@ -747,7 +713,7 @@ img.dev-loop {
 
 <table
   id="section-1-content-block-2-1-body-table"
-  class="table-sm ge-index-page-validation-results-table" 
+  class="table-sm ge-index-page-expectation_suites-table" 
   data-toggle="table"
 >
 </table>
@@ -805,111 +771,9 @@ img.dev-loop {
   $('#section-1-content-block-2-1-body-table').bootstrapTable(
     Object.assign(
       {
-        columns: [{'field': 'validation_success', 'title': 'Status', 'sortable': 'true', 'align': 'center', 'filterControl': 'select', 'filterDataCollector': 'validationSuccessFilterDataCollector'}, {'field': 'run_time', 'title': 'Run Time', 'sortName': '_run_time_sort', 'sortable': 'true', 'filterControl': 'datepicker', 'filterCustomSearch': 'formatRuntimeDateForFilter', 'filterDatepickerOptions': {'clearBtn': 'true', 'autoclose': 'true', 'format': 'yyyy-mm-dd', 'todayHighlight': 'true'}}, {'field': 'run_name', 'title': 'Run Name', 'sortable': 'true', 'filterControl': 'input'}, {'field': 'asset_name', 'title': 'Asset Name', 'sortable': 'true', 'filterControl': 'select'}, {'field': 'batch_identifier', 'title': 'Batch ID', 'sortName': '_batch_identifier_sort', 'sortable': 'true', 'filterControl': 'input'}, {'field': 'expectation_suite_name', 'title': 'Expectation Suite', 'sortName': '_expectation_suite_name_sort', 'sortable': 'true', 'filterControl': 'select', 'filterDataCollector': 'expectationSuiteNameFilterDataCollector'}],
-        data: [{'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-check-circle text-success ge-success-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 15:09:17 EST', '_run_time_sort': 1675800557.963562, 'run_name': '20230207-200917-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    bdf7b1abd998d157bb280a485fbecd0e\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/nexrad_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': 'bdf7b1abd998d157bb280a485fbecd0e', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/nexrad_metadata_suite.html" style="word-break:break-all;" >\n                    nexrad_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'nexrad_metadata_suite', '_table_row_link_path': 'validations/nexrad_metadata_suite/20230207-200917-my-run-name-template/20230207T200917.963562Z/bdf7b1abd998d157bb280a485fbecd0e.html', '_validation_success_text': 'Success', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-check-circle text-success ge-success-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 14:54:36 EST', '_run_time_sort': 1675799676.81362, 'run_name': '20230207-195436-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    bdf7b1abd998d157bb280a485fbecd0e\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/nexrad_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': 'bdf7b1abd998d157bb280a485fbecd0e', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/nexrad_metadata_suite.html" style="word-break:break-all;" >\n                    nexrad_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'nexrad_metadata_suite', '_table_row_link_path': 'validations/nexrad_metadata_suite/20230207-195436-my-run-name-template/20230207T195436.813620Z/bdf7b1abd998d157bb280a485fbecd0e.html', '_validation_success_text': 'Success', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-times text-danger ge-failed-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 14:53:11 EST', '_run_time_sort': 1675799591.053793, 'run_name': '20230207-195311-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    bdf7b1abd998d157bb280a485fbecd0e\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/nexrad_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': 'bdf7b1abd998d157bb280a485fbecd0e', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/geos_metadata_suite.html" style="word-break:break-all;" >\n                    geos_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'geos_metadata_suite', '_table_row_link_path': 'validations/geos_metadata_suite/20230207-195311-my-run-name-template/20230207T195311.053793Z/bdf7b1abd998d157bb280a485fbecd0e.html', '_validation_success_text': 'Failed', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-check-circle text-success ge-success-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 14:51:13 EST', '_run_time_sort': 1675799473.007319, 'run_name': '__none__', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    bdf7b1abd998d157bb280a485fbecd0e\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/nexrad_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': 'bdf7b1abd998d157bb280a485fbecd0e', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/nexrad_metadata_suite.html" style="word-break:break-all;" >\n                    nexrad_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'nexrad_metadata_suite', '_table_row_link_path': 'validations/nexrad_metadata_suite/__none__/20230207T195113.007319Z/bdf7b1abd998d157bb280a485fbecd0e.html', '_validation_success_text': 'Success', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-check-circle text-success ge-success-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 12:03:52 EST', '_run_time_sort': 1675789432.087269, 'run_name': '20230207-170352-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    8a6efdbfedd84bb2217283db7618e2f3\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/geos_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': '8a6efdbfedd84bb2217283db7618e2f3', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/geos_metadata_suite.html" style="word-break:break-all;" >\n                    geos_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'geos_metadata_suite', '_table_row_link_path': 'validations/geos_metadata_suite/20230207-170352-my-run-name-template/20230207T170352.087269Z/8a6efdbfedd84bb2217283db7618e2f3.html', '_validation_success_text': 'Success', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-times text-danger ge-failed-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 11:44:02 EST', '_run_time_sort': 1675788242.606343, 'run_name': '20230207-164402-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    8a6efdbfedd84bb2217283db7618e2f3\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/geos_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': '8a6efdbfedd84bb2217283db7618e2f3', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/geos_metadata_suite.html" style="word-break:break-all;" >\n                    geos_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'geos_metadata_suite', '_table_row_link_path': 'validations/geos_metadata_suite/20230207-164402-my-run-name-template/20230207T164402.606343Z/8a6efdbfedd84bb2217283db7618e2f3.html', '_validation_success_text': 'Failed', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-times text-danger ge-failed-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 11:32:02 EST', '_run_time_sort': 1675787522.832762, 'run_name': '20230207-163202-my-run-name-template', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    bdf7b1abd998d157bb280a485fbecd0e\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/nexrad_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': 'bdf7b1abd998d157bb280a485fbecd0e', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/geos_metadata_suite.html" style="word-break:break-all;" >\n                    geos_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'geos_metadata_suite', '_table_row_link_path': 'validations/geos_metadata_suite/20230207-163202-my-run-name-template/20230207T163202.832762Z/bdf7b1abd998d157bb280a485fbecd0e.html', '_validation_success_text': 'Failed', 'asset_name': ''}, {'validation_success': '\n                <span class="ge-index-page-table-validation-links-item" >\n                    <i class="fas fa-check-circle text-success ge-success-icon" ></i>\n                </span>\n            ', 'run_time': '2023-02-07 11:18:55 EST', '_run_time_sort': 1675786735.129008, 'run_name': '__none__', 'batch_identifier': '\n                <span class="m-0 p-0 cooltip" >\n                    8a6efdbfedd84bb2217283db7618e2f3\n                    <span class=top>\n                        Batch Spec:\n\n{\n  "path": "/Users/manideepakreddyaila/Desktop/DAMG7245/Assignment1/great_expectations/data/geos_metadata.csv"\n}\n                    </span>\n                </span>\n            ', '_batch_identifier_sort': '8a6efdbfedd84bb2217283db7618e2f3', 'expectation_suite_name': '\n                <a class="ge-index-page-table-expectation-suite-link" href="expectations/geos_metadata_suite.html" style="word-break:break-all;" >\n                    geos_metadata_suite\n                </a>\n            ', '_expectation_suite_name_sort': 'geos_metadata_suite', '_table_row_link_path': 'validations/geos_metadata_suite/__none__/20230207T161855.129008Z/8a6efdbfedd84bb2217283db7618e2f3.html', '_validation_success_text': 'Success', 'asset_name': ''}],
-        toolbar: '#section-1-content-block-2-1-body-table-toolbar'
-      },
-      {'search': 'true', 'trimOnSearch': 'false', 'visibleSearch': 'true', 'rowStyle': 'rowStyleLinks', 'rowAttributes': 'rowAttributesLinks', 'sortName': 'run_time', 'sortOrder': 'desc', 'pagination': 'true', 'filterControl': 'true', 'iconSize': 'sm', 'toolbarAlign': 'right', 'showSearchClearButton': 'true'}
-    )
-  );
-
-  
-
-  
-    $(document).ready(function() {
-      $("#section-1-content-block-2-1-body-table").on('click-row.bs.table', function(e, row, $element) {
-          window.location = $element.data("href");
-        })
-      }
-    );
-  
-</script>
-      </div>
-    
-      <div
-        class="tab-pane fade"
-        id="Expectation-Suites"
-        role="tabpanel"
-        aria-labelledby="Expectation-Suites-tab">
-        
-
-
-
-
-
-
-  
-
-
-<div id="section-1-content-block-2-2-body-table-toolbar" class="ml-1">
-  
-    <button class="btn btn-sm btn-secondary ml-1" onclick="clearTableFilters('section-1-content-block-2-2-body-table')">Clear Filters</button>
-  
-</div>
-
-<table
-  id="section-1-content-block-2-2-body-table"
-  class="table-sm ge-index-page-expectation_suites-table" 
-  data-toggle="table"
->
-</table>
-
-<script>
-  function rowStyleLinks(row, index) {
-    return {
-      css: {
-        cursor: "pointer"
-      }
-    }
-  }
-
-  function rowAttributesLinks(row, index) {
-    return {
-      "class": "clickable-row",
-      "data-href": row._table_row_link_path
-    }
-  }
-
-  function expectationSuiteNameFilterDataCollector(value, row, formattedValue) {
-    return row._expectation_suite_name_sort;
-  }
-
-  function validationSuccessFilterDataCollector(value, row, formattedValue) {
-    return row._validation_success_text;
-  }
-
-    function getFormattedDateWithoutTime  (d) {
-
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [year, month, day].join('-');
-    }
-
-  function formatRuntimeDateForFilter(text, value, field, data){
-    const cellValueAsDateObj = new Date(value);
-    return text == getFormattedDateWithoutTime(cellValueAsDateObj);
-  }
-
-  function clearTableFilters(tableId) {
-    $(`#${tableId}`).bootstrapTable('clearFilterControl');
-    $(`#${tableId}`).bootstrapTable('resetSearch');
-  }
-</script>
-
-<script>
-  $('#section-1-content-block-2-2-body-table').bootstrapTable(
-    Object.assign(
-      {
         columns: [{'field': 'expectation_suite_name', 'title': 'Expectation Suites', 'sortable': 'true'}],
-        data: [{'expectation_suite_name': 'nexrad_metadata_suite', '_table_row_link_path': 'expectations/nexrad_metadata_suite.html'}, {'expectation_suite_name': 'geos_metadata_suite', '_table_row_link_path': 'expectations/geos_metadata_suite.html'}],
-        toolbar: '#section-1-content-block-2-2-body-table-toolbar'
+        data: [{'expectation_suite_name': 'geos_metadata_suite', '_table_row_link_path': 'expectations\\geos_metadata_suite.html'}, {'expectation_suite_name': 'nexrad_metadata_suite', '_table_row_link_path': 'expectations\\nexrad_metadata_suite.html'}],
+        toolbar: '#section-1-content-block-2-1-body-table-toolbar'
       },
       {'search': 'true', 'trimOnSearch': 'false', 'visibleSearch': 'true', 'rowStyle': 'rowStyleLinks', 'rowAttributes': 'rowAttributesLinks', 'sortName': 'expectation_suite_name', 'sortOrder': 'asc', 'pagination': 'true', 'iconSize': 'sm', 'toolbarAlign': 'right'}
     )
@@ -919,7 +783,7 @@ img.dev-loop {
 
   
     $(document).ready(function() {
-      $("#section-1-content-block-2-2-body-table").on('click-row.bs.table', function(e, row, $element) {
+      $("#section-1-content-block-2-1-body-table").on('click-row.bs.table', function(e, row, $element) {
           window.location = $element.data("href");
         })
       }

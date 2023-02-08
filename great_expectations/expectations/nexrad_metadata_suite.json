@@ -105,6 +105,24 @@
         "min_value": 1
       },
       "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_equal",
+      "kwargs": {
+        "allow_cross_type_comparisons": true,
+        "column": "day",
+        "value": 2
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_equal",
+      "kwargs": {
+        "allow_cross_type_comparisons": true,
+        "column": "month",
+        "value": 2
+      },
+      "meta": {}
     }
   ],
   "ge_cloud_id": null,
