@@ -1,5 +1,6 @@
 from S3Util import S3Util
 import sqlite3
+import pandas as pd
 
 class DbUtil:
     conn = None
@@ -37,11 +38,13 @@ class DbUtil:
 if __name__ == '__main__':
     column_names_geos = {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'product': 'TEXT', 'year': 'TEXT', 'day_of_year': 'TEXT', 'hour': 'TEXT'}
     column_names_nexrad = {'id': 'INTEGER PRIMARY KEY AUTOINCREMENT', 'year': 'TEXT', 'month': 'TEXT', 'day': 'TEXT', 'station': 'TEXT'}
+    column_names_nexrad_lat_long = {'station': 'TEXT', 'LAT': 'REAL', 'LONG': 'REAL', 'city': 'TEXT'}
     db_file_name = 'metadata.db'
     bucket_name_geos = 'noaa-goes18'
     bucket_name_nexrad = 'noaa-nexrad-level2'
     table_name_geos = 'geos18'
     table_name_nexrad = 'nexrad'
+    table_name_nexrad_lat_long = 'nexrad_lat_long'
     resource_name = 's3'
 
     # s3util = S3Util(resource_name, bucket_name_nexrad)
@@ -52,8 +55,17 @@ if __name__ == '__main__':
     try:
         # GEOS
         # creation of table
-        columns_to_create = [key + ' ' + value for key, value in column_names_geos.items()]
-        column_keys = list(column_names_geos.keys())
+        columns_to_create = [key + ' ' + value for key, value in column_names_nexrad_lat_long.items()]
+        column_keys = list(column_names_nexrad_lat_long.keys())
+        util.create_table(table_name_nexrad_lat_long, *columns_to_create)
+
+        df = pd.read_csv('nexrad-stations.csv')
+
+        filtered_df = df[['ICAO', 'LAT', 'LON', 'NAME']]
+
+        l = list(filtered_df.itertuples(index = False, name = None))
+
+        util.insert(table_name_nexrad_lat_long, column_keys, l)
         # util.create_table(table_name_geos, *columns_to_create)
 
         # insertion of rows
@@ -78,9 +90,9 @@ if __name__ == '__main__':
 
         # filtering of rows
         # print(util.filter(table_name_geos, '', product='ABI-L1b-RadC', year='2022', day_of_year='209'))
-        print(util.filter(table_name_geos, 'day_of_year', product='ABI-L1b-RadC', year='2022'))
-        print(util.filter(table_name_geos, 'year', product='ABI-L1b-RadC'))
-        print(util.filter(table_name_geos, 'product', **{}))
+        # print(util.filter(table_name_geos, 'day_of_year', product='ABI-L1b-RadC', year='2022'))
+        # print(util.filter(table_name_geos, 'year', product='ABI-L1b-RadC'))
+        # print(util.filter(table_name_geos, 'product', **{}))
 
         # NEXRAD
         # creation of table
