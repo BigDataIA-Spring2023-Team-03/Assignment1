@@ -15,7 +15,9 @@ from decouple import config
 import dbUtil
 # Import AWS Logging
 from aws_logging import write_logs
+from dbUtil import *
 
+util = DbUtil("metadata.db")
 ########################################################################################################################
 # AWS Destination Credentials:
 aws_access_key_id = config('aws_access_key_id')
@@ -195,120 +197,190 @@ def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_sel
     return dest_url
 
 
-if search_method == 'Field Selection':
+if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary satellite':
     result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
     folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
 
     for folder in folders:
-        # print("Folder:", folder)
         first_level.append(folder)
 
-    prod_selected = st.selectbox(
-        f'Please select {metadata[0]}', first_level)
+    st.write("Selected Product is ABI-L1b-RadC")
 
-    if prod_selected:                                                                                   #prod selected
-        
-        result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prod_selected, Delimiter='/')
-        for o in result.get('CommonPrefixes'):
-            year.append(o.get('Prefix'))
+    year_list =util.filter("geos18", 'year', product='ABI-L1b-RadC')
+    year_list.insert(0, "")
+    year_selected = st.selectbox(
+    f'Please select {metadata[1]}', year_list)
 
-        for i in range(len(year)):
-            year[i] = year[i].replace(prod_selected, '')
-        
-        year_selected = st.selectbox(
-        f'Please select {metadata[1]}', year)
+    if year_selected:      
 
+        day_list =util.filter("geos18", 'day_of_year', product='ABI-L1b-RadC', year=year_selected)
+        day_list.insert(0, "")
+        day_selected = st.selectbox(
+        f'Please select {metadata[2]}', day_list)
 
-        if year_selected:      
-                                                                                        #year selected
-            prefix = prod_selected+year_selected
-            result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
-            for o in result.get('CommonPrefixes'):
-                months.append(o.get('Prefix'))
+        if day_selected:      
+                                                                                   #months selected
+            hour_list =util.filter("geos18", 'hour', product='ABI-L1b-RadC', year=year_selected, day_of_year=day_selected)
+            hour_list.insert(0, "")
+            hour_selected = st.selectbox(
+            f'Please select {metadata[3]}', hour_list)
 
-            for i in range(len(months)):
-                months[i] = months[i].replace(prefix, '')
-            
-            months_selected = st.selectbox(
-            f'Please select {metadata[2]}', months)
-
-            if months_selected:      
-                                                                                        #months selected
-                prefix = prod_selected+year_selected+months_selected
+            if hour_selected:      
+                                                                                    #months selected
+                prefix = "ABI-L1b-RadC/"+year_selected+"/"+day_selected+"/"+hour_selected+"/"
                 result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
-                for o in result.get('CommonPrefixes'):
-                    days.append(o.get('Prefix'))
+                for item in result['Contents']:
+                    file = item['Key']
+                    files.append(file)
 
-                for i in range(len(days)):
-                    days[i] = days[i].replace(prefix, '')
-                
-                days_selected = st.selectbox(
-                f'Please select {metadata[3]}', days)
+                for i in range(len(files)):
+                    files[i] = files[i].replace(prefix, '')
 
-                if days_selected:      
-                                                                                        #months selected
-                    prefix = prod_selected+year_selected+months_selected+days_selected
+                # Download all files in folder
+                files.insert(1, 'Download All Files')
+
+                files_selected = st.selectbox(
+                f'Please select {metadata[4]}', files)
+
+                if files_selected == 'Download All Files':
                     result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
-                    for item in result['Contents']:
-                        file = item['Key']
-                        files.append(file)
+                for item in result['Contents']:
+                    file = item['Key']
+                    files.append(file)
 
-                    st.write(f'Total Files Available: {len(files)}')
+                st.write(f'Total Files Available: {len(files)}')
 
-                    for i in range(len(files)):
-                        files[i] = files[i].replace(prefix, '')
+                if files_selected == 'Download All Files':
+                    s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+                    # Total Folder Size
+                    s3_folder = prefix
+                    bytes = sum([object.size for object in s3.Bucket(BUCKET_NAME).objects.filter(Prefix=s3_folder)])
+                    st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
 
-                    # Download all files in folder
-                    files.insert(1, 'Download All Files')
+                    if st.button('Download All Files'):
+                        # TODO
+                        download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
 
+                elif files_selected:
+                    url = filename_url_producer(BUCKET_NAME, files_selected)
+                    st.write(url)
+                    user_inputs = ["ABI-L1b-RadC", year_selected, day_selected, hour_selected, files_selected]
+                    write_logs(f'User Input: {user_inputs}')
+                    write_logs(f'Generated URL: {url}')
 
-                    files_selected = st.selectbox(
-                    f'Please select {metadata[4]}', files)
+                    # TESTING
+                    st.write('TEST:')
+                    st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
+                    st.text("")
+                    st.text("")
+                    st.text("")
 
-                    if files_selected == 'Download All Files':
-                        s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
-                        # Total Folder Size
-                        s3_folder = prefix
-                        bytes = sum([object.size for object in s3.Bucket(BUCKET_NAME).objects.filter(Prefix=s3_folder)])
-                        st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
+                    if (search_method == 'File Name' and file_name_input) or (search_method == 'Field Selection' and files_selected):
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button('Download File'):
+                                write_logs('User Action: Downloaded File Locally')
+                                webbrowser.open_new_tab(url)
+                                st.write('File Downloaded Locally')
 
-                        if st.button('Download All Files'):
-                            # TODO
-                            download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
+                        with col2:
+                            if st.button('Transfer File to S3 Bucket'):
+                                dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                                write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
+                                if 'Error' in dest_url:
+                                    st.write(dest_url)
+                                st.write(f'Destination s3 URL: {dest_url}')
 
-                    elif files_selected:
-                        url = filename_url_producer(BUCKET_NAME, files_selected)
-                        st.write(url)
-                        user_inputs = [prod_selected, year_selected, months_selected, days_selected, files_selected]
-                        write_logs(f'User Input: {user_inputs}')
-                        write_logs(f'Generated URL: {url}')
+if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars':
+    BUCKET_NAME = 'noaa-nexrad-level2'
+    result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
+    folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
 
-                        # TESTING
-                        st.write('TEST:')
-                        st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
-                        st.text("")
-                        st.text("")
-                        st.text("")
+    for folder in folders:
+        first_level.append(folder)
 
-# 
-if (search_method == 'File Name' and file_name_input) or (search_method == 'Field Selection' and files_selected):
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button('Download File'):
-            write_logs('User Action: Downloaded File Locally')
-            webbrowser.open_new_tab(url)
-            st.write('File Downloaded Locally')
+    st.write("Selected Year is 2023")
 
-    with col2:
-        if st.button('Transfer File to S3 Bucket'):
-            dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
-            write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
-            if 'Error' in dest_url:
-                st.write(dest_url)
-            st.write(f'Destination s3 URL: {dest_url}')
+    month_list =util.filter("nexrad", 'month', year='2023')
+    month_list.insert(0, "")
+    month_selected = st.selectbox(
+    f'Please select {metadata[1]}', month_list)
 
+    if month_selected:      
 
-        
+        day_list =util.filter("nexrad", 'day', year='2023', month=month_selected)
+        day_list.insert(0, "")
+        day_selected = st.selectbox(
+        f'Please select {metadata[2]}', day_list)
+
+        if day_selected:      
+                                                                                   #months selected
+            station_list =util.filter("nexrad", 'station', year='2023', month=month_selected, day=day_selected)
+            station_list.insert(0, "")
+            station_selected = st.selectbox(
+            f'Please select {metadata[3]}', station_list)
+
+            if station_selected:      
+                                                                                #months selected
+                prefix = "2023/"+month_selected+"/"+day_selected+"/"+station_selected+"/"
+                result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
+                for item in result['Contents']:
+                    file = item['Key']
+                    files.append(file)
+
+                st.write(f'Total Files Available: {len(files)}')
+
+                for i in range(len(files)):
+                    files[i] = files[i].replace(prefix, '')
+
+                # Download all files in folder
+                files.insert(1, 'Download All Files')
+
+                files_selected = st.selectbox(
+                f'Please select {metadata[4]}', files)
+
+                if files_selected == 'Download All Files':
+                    s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
+                    # Total Folder Size
+                    s3_folder = prefix
+                    bytes = sum([object.size for object in s3.Bucket(BUCKET_NAME).objects.filter(Prefix=s3_folder)])
+                    st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
+
+                if st.button('Download All Files'):
+                    # TODO
+                    download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
+                elif files_selected:
+                    st.write(files_selected)
+                    url = filename_url_producer(BUCKET_NAME, files_selected)
+                    st.write(url)
+                    user_inputs = ["2023", month_selected, day_selected, station_selected, files_selected]
+                    write_logs(f'User Input: {user_inputs}')
+                    write_logs(f'Generated URL: {url}')
+
+                    # TESTING
+                    st.write('TEST:')
+                    st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
+                    st.text("")
+                    st.text("")
+                    st.text("")
+
+                    if (search_method == 'File Name' and file_name_input) or (search_method == 'Field Selection' and files_selected):
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button('Download File'):
+                                write_logs('User Action: Downloaded File Locally')
+                                webbrowser.open_new_tab(url)
+                                st.write('File Downloaded Locally')
+
+                        with col2:
+                            if st.button('Transfer File to S3 Bucket'):
+                                dest_url = copy_file_to_dest_s3(BUCKET_NAME, dest_bucket, dest_folder, prefix, files_selected)
+                                write_logs(f'User Action: Transfered file to S3 Bucket - {dest_url}')
+                                if 'Error' in dest_url:
+                                    st.write(dest_url)
+                                st.write(f'Destination s3 URL: {dest_url}')
+
+    
 
 
 # {
