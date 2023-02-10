@@ -98,7 +98,14 @@ Example Logs:
 ### Expected Results
 ![NEXRAD Locations by cities](https://user-images.githubusercontent.com/59594174/110068964-c9b0fe00-7d44-11eb-9c03-1f8660eca010.PNG)
 
-
+## Attestation and Contribution Declaration:
+Required attestation and contribution declaration on the GitHub page:
+WE ATTEST THAT WE HAVEN’T USED ANY OTHER STUDENTS’ WORK IN OUR ASSIGNMENT
+AND ABIDE BY THE POLICIES LISTED IN THE STUDENT HANDBOOK
+- Raj Mehta
+- Mani Deepak Reddy Aila
+- Jared Videlefsky
+- Rumi Jha 
 
 ## References & Citation
 
