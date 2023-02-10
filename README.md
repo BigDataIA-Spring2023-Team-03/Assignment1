@@ -87,6 +87,8 @@ Logging was created with AWS CloudWatch. Logs contain a timestamp and a message.
 - User Input
 - Generated URL based off of the User Input
 - User Action: Download Locally or Transfer to S3 Bucket
+Example Logs:
+![image](https://user-images.githubusercontent.com/47637485/217996246-a39d46e0-ad0d-445a-b9ea-296f1be21abf.png)
 
 #### change image according to our console
 
