@@ -17,6 +17,17 @@ import dbUtil
 from aws_logging import write_logs
 from dbUtil import *
 
+#########################################
+#Pages:
+st.set_page_config(
+    page_title="DAMG7245_Spring2023 Group 03",
+    page_icon="👋",
+)
+
+st.sidebar.success("Select a page above.")
+
+#########################################
+
 util = DbUtil("metadata.db")
 ########################################################################################################################
 # AWS Destination Credentials:
