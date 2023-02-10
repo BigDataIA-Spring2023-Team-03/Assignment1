@@ -19,13 +19,18 @@ For Detail documentation- [Click here](https://codelabs-preview.appspot.com/?fil
 
 #### To Run:
 `pip install -r requirements.txt`
+
 `streamlit run SEVIRDataFetcher.py`
 
 #### Files Description:
 SEVIRDataFetcher.py - This has functions to generate the url from filename. It also has the streamlit code for UI.
+
 DbUtil.py - Utility class which has functions to create table, insert rows into table and to filter the data from tables.
+
 S3Util.py - Utility class to work with AWS S3
+
 aws_logging.py - To add cloudwatch logs on the users' request and the output
+
 NexradStations.py - streamlit code to plot the nexrad stations on map
 
 
