@@ -56,18 +56,17 @@ S3:
 
 ## Streamlit
 
-We have implemented a Streamlit app to create a frontend application
+We have implemented a Streamlit app to plot NexRad Radar Station in a frontend application.
 
-Add steps here
-```
-    pip install streamlit
-    pip install pandas
-    pip install matplotlib
-```
-4. Start the app by running `streamlit run homepage.py` where `homepage.py` is homepage of your application script.
+Steps:
+1. Import libraries (Streamlit, folium, Streamlit_foliumn) needed to plot the locations on map
+2. Connect to the SQlite database and fetch data from nexrad_lat_long table having latitude and longitude information on the location
+3. make use of folium function to plot the location on map
+4. Launch the web application by running `streamlit run NexRadRadarStations.py` script
 
-
-![image](https://user-images.githubusercontent.com/91744801/217997057-fc77e15b-1969-4171-8610-d12b903a9571.jpg)
+The data in the image below contains locations of current and archived radar stations. The map denotes these specified stations by a blue pin.
+Additional information can be retrieved like the station name and city in which station is located by hovering over the points.
+![image](https://user-images.githubusercontent.com/91744801/217998698-1e8d89ce-ed71-4a3e-8d77-dfc45a842986.jpg)
 
 
 ## Dashboards
