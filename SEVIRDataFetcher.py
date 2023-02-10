@@ -6,11 +6,10 @@ from botocore.config import Config
 from botocore.errorfactory import ClientError # checking if file exists already
 import webbrowser
 from decouple import config
-# Import class from dbUtil
-# Import AWS Logging
 from aws_logging import write_logs
 from Util.dbUtil import *
 from Util.S3Util import S3Util
+import string
 
 #########################################
 #Pages:
@@ -89,8 +88,7 @@ files.append("")
 
 def filename_url_producer(bucket_name, file_name):
     pieces = file_name.split("_")
-    if 'nexrad' in bucket_name: 
-        print(pieces)
+    if 'nexrad' in bucket_name:
         nexrad_station = pieces[0][0:4]
         year = pieces[0][4:8]
         month = pieces[0][8:10]
@@ -98,15 +96,14 @@ def filename_url_producer(bucket_name, file_name):
         time = pieces[1]
         core_url = f'https://noaa-nexrad-level2.s3.amazonaws.com/{year}/{month}/{day}/{nexrad_station}/{file_name}'
     if 'noaa-goes' in bucket_name:
-        print(pieces)
         product = pieces[1]
         product_fn = product[:product.rindex('-')]
+        product_fn = product_fn.rstrip(string.digits)
         year = pieces[3][1:5]
         day_of_year = pieces[3][5:8]
         hour = pieces[3][8:10]
         core_url = f'https://noaa-goes18.s3.amazonaws.com/{product_fn}/{year}/{day_of_year}/{hour}/{file_name}'
-    
-    print(core_url)
+
     return core_url 
 
 
@@ -134,13 +131,7 @@ if search_method == 'File Name':
                 st.markdown(error, unsafe_allow_html=True)
 
 
-
-# BUCKET_NAME = 'noaa-goes16'
-# BUCKET_FILE_NAME = 'ABI-L1b-RadC/2023/003/02/OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
-# LOCAL_FILE_NAME = 'OR_ABI-L1b-RadC-M6C01_G16_s20230030206174_e20230030208551_c20230030208598.nc'
-
 s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
-# s3.download_file(BUCKET_NAME, BUCKET_FILE_NAME, LOCAL_FILE_NAME)
 
 # Download Entire Folder
 def download_s3_folder(bucket_name, s3_folder, local_dir=None):
@@ -189,8 +180,7 @@ def copy_file_to_dest_s3(src_bucket, dest_bucket, dest_folder, prefix, files_sel
         test = s3_dest.upload_fileobj(src_response['Body'], dest_bucket, dest_file_name)
         
     dest_url = f'https://{dest_bucket}.s3.amazonaws.com/{dest_file_name}'
-    # print(f'Destination s3 URL: {dest_url}')
-    
+
     return dest_url
 
 
@@ -215,15 +205,13 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
         day_selected = st.selectbox(
         f'Please select {metadata[2]}', day_list)
 
-        if day_selected:      
-                                                                                   #months selected
+        if day_selected:
             hour_list =util.filter("geos18", 'hour', product='ABI-L1b-RadC', year=year_selected, day_of_year=day_selected)
             hour_list.insert(0, "")
             hour_selected = st.selectbox(
             f'Please select {metadata[3]}', hour_list)
 
-            if hour_selected:      
-                                                                                    #months selected
+            if hour_selected:
                 prefix = "ABI-L1b-RadC/"+year_selected+"/"+day_selected+"/"+hour_selected+"/"
                 result = s3.list_objects(Bucket=BUCKET_NAME, Prefix=prefix, Delimiter='/')
                 for item in result['Contents']:
@@ -255,7 +243,6 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
                     st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
 
                     if st.button('Download All Files'):
-                        # TODO
                         download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
 
                 elif files_selected:
@@ -271,9 +258,6 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
                     write_logs(f'User Input: {user_inputs}')
                     write_logs(f'Generated URL: {url}')
 
-                    # # TESTING
-                    # st.write('TEST:')
-                    # st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
                     st.text("")
                     st.text("")
                     st.text("")
@@ -296,15 +280,8 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
 
 if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars':
     BUCKET_NAME = 'noaa-nexrad-level2'
-    result = s3.list_objects_v2(Bucket=BUCKET_NAME, Delimiter="/")
-    folders = [fld["Prefix"] for fld in result["CommonPrefixes"]]
-
     s3_util = S3Util('s3', BUCKET_NAME)
 
-    for folder in folders:
-        first_level.append(folder)
-
-    # st.write("Selected Year: 2023")
     year_list = util.filter('nexrad', 'year', **{})
     year_list.insert(0, "")
     year_selected = st.selectbox(f'Please select {metadata[0]}', year_list)
@@ -316,7 +293,6 @@ if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars'
         f'Please select {metadata[1]}', month_list)
 
         if month_selected:
-
             day_list =util.filter("nexrad", 'day', year=year_selected, month=month_selected)
             day_list.insert(0, "")
             day_selected = st.selectbox(
@@ -354,7 +330,6 @@ if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars'
                         st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
 
                         if st.button('Download All Files'):
-                            # TODO
                             download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
                     elif files_selected:
                         user_inputs = [year_selected, month_selected, day_selected, station_selected, files_selected]

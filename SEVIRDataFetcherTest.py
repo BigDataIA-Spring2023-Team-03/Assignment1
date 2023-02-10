@@ -1,26 +1,32 @@
 import unittest
 from SEVIRDataFetcher import filename_url_producer
+import pandas as pd
 
 
 class TestSevirDataFetcher(unittest.TestCase):
 
+    def setUp(self):
+        self.df = pd.read_excel('data/goes_classsheet.xlsx', sheet_name = ['GEOS - Datasets','NEXRAD-Datasets'])
+
     def test_geos_filename_producer(self):
         bucket_name = 'noaa-goes18'
-        filename = 'OR_ABI-L1b-RadC-M6C01_G18_s20230020101172_e20230020103548_c20230020103594.nc'
-        expected = 'https://noaa-goes18.s3.amazonaws.com/ABI-L1b-RadC/2023/002/01/OR_ABI-L1b-RadC' \
-                   '-M6C01_G18_s20230020101172_e20230020103548_c20230020103594.nc'
+        df = self.df.get('GEOS - Datasets')
+        actual = df[['File name']][1:13].values.tolist()
 
-        actual = filename_url_producer(bucket_name, filename)
-        self.assertEqual(expected, actual)
+        expected = df[['Full file name']][1:13].values.tolist()
+
+        for i in range(len(actual)):
+            actual_url = filename_url_producer(bucket_name, actual[i][0])
+            self.assertEqual(actual_url, expected[i][0])
 
     def test_nexrad_filename_producer(self):
-        bucket_name = 'nexrad-level2'
-        filename = 'KABR20150820_222521_V06'
-        expected = 'https://noaa-nexrad-level2.s3.amazonaws.com/2015/08/20/KABR/KABR20150820_222521_V06'
-
-        actual = filename_url_producer(bucket_name, filename)
-        self.assertEqual(expected, actual)
-
+        bucket_name = 'noaa-nexrad-level2'
+        df = self.df.get('NEXRAD-Datasets')
+        actual = df[['File name']][1:13].values.tolist()
+        expected = df[['Full file name']][1:13].values.tolist()
+        for i in range(len(actual)):
+            actual_url = filename_url_producer(bucket_name, actual[i][0])
+            self.assertEqual(actual_url, expected[i][0])
 
 if __name__ == '__main__':
     unittest.main()
