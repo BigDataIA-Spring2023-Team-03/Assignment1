@@ -25,8 +25,6 @@
 Amazon Glue for ETL and Amazon Quicksight for Visualization and Dashboard creation.**
 
 ![AWS_Architecture](add image)
-S3:
-![image](https://user-images.githubusercontent.com/47637485/217303369-17c5a261-d876-4090-8afd-61b0aae98825.png)
 
 ## Requirements
 
