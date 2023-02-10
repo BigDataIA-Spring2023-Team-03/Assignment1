@@ -48,7 +48,7 @@ S3:
 
 ## AWS Config
 
-#### Add here
+Utilized Amazon S3, Amazon IAM, and Amazon CloudWatch. Used Jared's AWS account as the root user and created a service account, DAMG_Service_Account, for the rest of the team. Service account has access to the necessary S3 buckets. Public users are able to download the transferred files from our S3 bucket.
 
 ## SQLite Database
 
