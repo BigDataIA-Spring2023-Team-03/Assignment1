@@ -50,9 +50,12 @@ S3:
 
 #### Add here
 
-## Configuring the SQLite Database
+## SQLite Database
 
-#### Add here
+1. Imported the sqlite3 library ( can be installed using the command `pip install sqlite3`)
+2. Sqlite Studio to work with the .db file (GUI)
+3. Created 3 tables `geos18`, `nexrad` and `nexrad_lat_long`.
+4. Utility class 'dbUtil' for functions like creating table, insertion of data into table and filter required data from table.
 
 ## Streamlit
 

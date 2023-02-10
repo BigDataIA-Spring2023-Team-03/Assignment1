@@ -1,21 +1,15 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import json
-import streamlit.components.v1 as components
 import os
 import boto3
 from botocore import UNSIGNED
 from botocore.config import Config
 from botocore.errorfactory import ClientError # checking if file exists already
-import string
 import webbrowser
 from decouple import config
 # Import class from dbUtil
-import dbUtil
 # Import AWS Logging
 from aws_logging import write_logs
-from dbUtil import *
+from Util.dbUtil import *
 
 #########################################
 #Pages:
