@@ -67,7 +67,7 @@ Add steps here
 4. Start the app by running `streamlit run homepage.py` where `homepage.py` is homepage of your application script.
 
 
-![image](Add Image)
+![image](https://user-images.githubusercontent.com/91744801/217997057-fc77e15b-1969-4171-8610-d12b903a9571.jpg)
 
 
 ## Dashboards
