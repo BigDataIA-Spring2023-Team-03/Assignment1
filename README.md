@@ -17,6 +17,16 @@
 #### CLAAT Link 
 For Detail documentation- [Click here](https://codelabs-preview.appspot.com/?file_id=1jWZRlWLSZw73qNv_FUd2FOhLIxVbF2EclaAxaLFgOgk#8)
 
+#### To Run:
+`pip install -r requirements.txt`
+`streamlit run SEVIRDataFetcher.py`
+
+#### Files Description:
+SEVIRDataFetcher.py - This has functions to generate the url from filename. It also has the streamlit code for UI.
+DbUtil.py - Utility class which has functions to create table, insert rows into table and to filter the data from tables.
+S3Util.py - Utility class to work with AWS S3
+aws_logging.py - To add cloudwatch logs on the users' request and the output
+NexradStations.py - streamlit code to plot the nexrad stations on map
 
 
 ## About
@@ -94,7 +104,7 @@ Required attestation and contribution declaration on the GitHub page:
 WE ATTEST THAT WE HAVEN’T USED ANY OTHER STUDENTS’ WORK IN OUR ASSIGNMENT
 AND ABIDE BY THE POLICIES LISTED IN THE STUDENT HANDBOOK
 - Raj Mehta
-- Mani Deepak Reddy Aila
+- Mani Deepak Reddy Aila - 25%
 - Jared Videlefsky
 - Rumi Jha 
 
