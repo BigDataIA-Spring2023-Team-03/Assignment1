@@ -142,11 +142,22 @@ if search_method == 'File Name':
     file_name_input = st.text_input('File Name:')
     # TODO: Need rules on what is a valid file_name input
     if file_name_input:
-        try:
-            url = filename_url_producer(BUCKET_NAME, file_name_input)
-        except:
-            error = '<p style="font-family:sans-serif; color:Red; font-size: 20px;">File Name Error!</p>'
-            st.markdown(error, unsafe_allow_html=True)
+        write_logs(f'User Input: {file_name_input}')
+        # TEST
+        # st.write(BUCKET_NAME)
+        if ('nexrad' in BUCKET_NAME and file_name_input[0:3] == 'OR_'): # or ('noaa-goes' in BUCKET_NAME and file_name_input[0:3] != 'OR_'):
+            # Tips
+            st.markdown('<p style="font-family:sans-serif; color:Green; font-size: 20px;">Tip: Change Datasource!</p>', unsafe_allow_html=True)
+        else:
+            try:
+                url = filename_url_producer(BUCKET_NAME, file_name_input)
+                st.write(url)
+                write_logs(f'Generated URL: {url}')
+            except Exception as e:
+                error = f"""<p style="font-family:sans-serif; color:Red; font-size: 20px;">File Name Error: Incorrect File Name Format!</p>
+                        <p style="font-family:sans-serif; color:Red; font-size: 20px; margin-left: 25px;">- Exception: {e}</p>"""
+                st.markdown(error, unsafe_allow_html=True)
+
 
 
 # BUCKET_NAME = 'noaa-goes16'
@@ -215,7 +226,7 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
     for folder in folders:
         first_level.append(folder)
 
-    st.write("Selected Product is ABI-L1b-RadC")
+    st.write("Selected Product: ABI-L1b-RadC")
 
     year_list =util.filter("geos18", 'year', product='ABI-L1b-RadC')
     year_list.insert(0, "")
@@ -244,6 +255,8 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
                     file = item['Key']
                     files.append(file)
 
+                st.write(f'Total Files Available: {len(files)}')
+
                 for i in range(len(files)):
                     files[i] = files[i].replace(prefix, '')
 
@@ -258,8 +271,6 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
                 for item in result['Contents']:
                     file = item['Key']
                     files.append(file)
-
-                st.write(f'Total Files Available: {len(files)}')
 
                 if files_selected == 'Download All Files':
                     s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
@@ -279,9 +290,9 @@ if search_method == 'Field Selection' and data_source == 'GOES-18 geostationary 
                     write_logs(f'User Input: {user_inputs}')
                     write_logs(f'Generated URL: {url}')
 
-                    # TESTING
-                    st.write('TEST:')
-                    st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
+                    # # TESTING
+                    # st.write('TEST:')
+                    # st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
                     st.text("")
                     st.text("")
                     st.text("")
@@ -310,7 +321,7 @@ if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars'
     for folder in folders:
         first_level.append(folder)
 
-    st.write("Selected Year is 2023")
+    st.write("Selected Year: 2023")
 
     month_list =util.filter("nexrad", 'month', year='2023')
     month_list.insert(0, "")
@@ -357,20 +368,21 @@ if search_method == 'Field Selection' and data_source == 'NEXRAD weather radars'
                     bytes = sum([object.size for object in s3.Bucket(BUCKET_NAME).objects.filter(Prefix=s3_folder)])
                     st.write(f'Total Folder Size: {round(bytes//1000/1024/1024, 3)} GB')
 
-                if st.button('Download All Files'):
-                    # TODO
-                    download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
+                    if st.button('Download All Files'):
+                        # TODO
+                        download_s3_folder(BUCKET_NAME, s3_folder, local_dir=None)
                 elif files_selected:
-                    st.write(files_selected)
+                    # TESTING
+                    # st.write(files_selected)
                     url = filename_url_producer(BUCKET_NAME, files_selected)
-                    st.write(url)
+                    st.write(f'Generated URL: {url}')
                     user_inputs = ["2023", month_selected, day_selected, station_selected, files_selected]
                     write_logs(f'User Input: {user_inputs}')
                     write_logs(f'Generated URL: {url}')
 
-                    # TESTING
-                    st.write('TEST:')
-                    st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
+                    # # TESTING
+                    # st.write('TEST:')
+                    # st.write(f'Prefix = {prefix}  \n Files_selected = {files_selected}')
                     st.text("")
                     st.text("")
                     st.text("")
