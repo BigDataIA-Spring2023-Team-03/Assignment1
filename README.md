@@ -50,6 +50,20 @@ S3:
 
 Utilized Amazon S3, Amazon IAM, and Amazon CloudWatch. Used Jared's AWS account as the root user and created a service account, DAMG_Service_Account, for the rest of the team. Service account has access to the necessary S3 buckets. Public users are able to download the transferred files from our S3 bucket.
 
+### Storage - AWS S3
+Stored files in AWS S3 buckets based on the datasource.
+
+![image](https://user-images.githubusercontent.com/47637485/218146529-06bac511-193a-425a-91fa-82030dd9cc17.png)
+
+### Logging - AWS CloudWatch
+Logging was created with AWS CloudWatch. Logs contain a timestamp and a message. The messages we record are below:
+- User Input
+- Generated URL based off of the User Input
+- User Action: Download Locally or Transfer to S3 Bucket
+
+Example Logs:
+![image](https://user-images.githubusercontent.com/47637485/217996246-a39d46e0-ad0d-445a-b9ea-296f1be21abf.png)
+
 ## SQLite Database
 
 1. Imported the sqlite3 library ( can be installed using the command `pip install sqlite3`)
@@ -83,15 +97,6 @@ Additional information can be retrieved like the station name and city in which 
 ![Sevir_Details_2018](https://user-images.githubusercontent.com/59594174/110068840-8fdff780-7d44-11eb-9f4e-1ec0e1f3d5be.png)
 
 ### SQLite Tables
-
-### Logging
-Logging was created with AWS CloudWatch. Logs contain a timestamp and a message. The messages we record are below:
-- User Input
-- Generated URL based off of the User Input
-- User Action: Download Locally or Transfer to S3 Bucket
-
-Example Logs:
-![image](https://user-images.githubusercontent.com/47637485/217996246-a39d46e0-ad0d-445a-b9ea-296f1be21abf.png)
 
 #### change image according to our console
 
