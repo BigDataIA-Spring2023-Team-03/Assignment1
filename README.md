@@ -108,9 +108,9 @@ LIVE APPLICATION - [CLICK HERE](https://bigdataia-spring2023-team-03-assignment-
 Required attestation and contribution declaration on the GitHub page:
 WE ATTEST THAT WE HAVEN’T USED ANY OTHER STUDENTS’ WORK IN OUR ASSIGNMENT
 AND ABIDE BY THE POLICIES LISTED IN THE STUDENT HANDBOOK
-- Raj Mehta
+- Raj Mehta - 25%
 - Mani Deepak Reddy Aila - 25%
-- Jared Videlefsky
-- Rumi Jha 
+- Jared Videlefsky - 25%
+- Rumi Jha - 25%
 
 
