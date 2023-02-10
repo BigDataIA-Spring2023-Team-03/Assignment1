@@ -14,7 +14,8 @@
  Submission Date: 10th February'23
 
 
-#### CLAAT Link
+#### CLAAT Link 
+For Detail documentation- [Click here](https://codelabs-preview.appspot.com/?file_id=1jWZRlWLSZw73qNv_FUd2FOhLIxVbF2EclaAxaLFgOgk#8)
 
 
 
@@ -86,6 +87,7 @@ The data in the image below contains locations of current and archived radar sta
 Additional information can be retrieved like the station name and city in which station is located by hovering over the points.
 ![image](https://user-images.githubusercontent.com/91744801/217998698-1e8d89ce-ed71-4a3e-8d77-dfc45a842986.jpg)
 
+LIVE APPLICATION - [CLICK HERE](https://bigdataia-spring2023-team-03-assignment-sevirdatafetcher-k0tjb7.streamlit.app/)
 
 ## Attestation and Contribution Declaration:
 Required attestation and contribution declaration on the GitHub page:
@@ -96,4 +98,4 @@ AND ABIDE BY THE POLICIES LISTED IN THE STUDENT HANDBOOK
 - Jared Videlefsky
 - Rumi Jha 
 
-#### Add References
+
