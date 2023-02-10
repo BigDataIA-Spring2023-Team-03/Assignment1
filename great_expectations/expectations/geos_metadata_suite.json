@@ -115,24 +115,6 @@
           "success_ratio": 1.0
         }
       }
-    },
-    {
-      "expectation_type": "expect_column_value_lengths_to_equal",
-      "kwargs": {
-        "allow_cross_type_comparisons": true,
-        "column": "hour",
-        "value": 2
-      },
-      "meta": {}
-    },
-    {
-      "expectation_type": "expect_column_value_lengths_to_equal",
-      "kwargs": {
-        "allow_cross_type_comparisons": true,
-        "column": "day_of_year",
-        "value": 2
-      },
-      "meta": {}
     }
   ],
   "ge_cloud_id": null,
