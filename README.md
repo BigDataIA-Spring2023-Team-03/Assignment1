@@ -56,18 +56,17 @@ S3:
 
 ## Streamlit
 
-We have implemented a Streamlit app to create a frontend application
+We have implemented a Streamlit app to plot NexRad Radar Station in a frontend application.
 
-Add steps here
-```
-    pip install streamlit
-    pip install pandas
-    pip install matplotlib
-```
-4. Start the app by running `streamlit run homepage.py` where `homepage.py` is homepage of your application script.
+Steps:
+1. Import libraries (Streamlit, folium, Streamlit_foliumn) needed to plot the locations on map
+2. Connect to the SQlite database and fetch data from nexrad_lat_long table having latitude and longitude information on the location
+3. make use of folium function to plot the location on map
+4. Launch the web application by running `streamlit run NexRadRadarStations.py` script
 
-
-![image](Add Image)
+The data in the image below contains locations of current and archived radar stations. The map denotes these specified stations by a blue pin.
+Additional information can be retrieved like the station name and city in which station is located by hovering over the points.
+![image](https://user-images.githubusercontent.com/91744801/217998698-1e8d89ce-ed71-4a3e-8d77-dfc45a842986.jpg)
 
 
 ## Dashboards
@@ -87,6 +86,9 @@ Logging was created with AWS CloudWatch. Logs contain a timestamp and a message.
 - User Input
 - Generated URL based off of the User Input
 - User Action: Download Locally or Transfer to S3 Bucket
+
+Example Logs:
+![image](https://user-images.githubusercontent.com/47637485/217996246-a39d46e0-ad0d-445a-b9ea-296f1be21abf.png)
 
 #### change image according to our console
 
